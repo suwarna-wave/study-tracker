@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>📘 Smart Study Tracker</h1>
+        <p>Track your progress and achieve excellence with a structured approach!</p>
+    </header>
+
+    <main>
+        <!-- Subject Selection -->
+        <section id="subject-selection">
+            <h2>Select a Subject</h2>
+            <select id="subject-dropdown">
+                <option value="">-- Select Subject --</option>
+                <option value="SH551">Applied Mathematics (SH-551)</option>
+                <option value="SH553">Numerical Method (SH-553)</option>
+                <option value="CT552">Data Structure and Algorithm (CT-552)</option>
+                <option value="EX603">Computer Graphics (EX-603)</option>
+                <option value="CT551">Discrete Structure (CT-551)</option>
+            </select>
+        </section>
+
+        <!-- Progress Overview -->
+        <section id="progress-overview">
+            <h2>Progress Overview</h2>
+            <div class="chart-container">
+                <canvas id="progress-chart"></canvas>
+            </div>
+            <div id="progress-stats">
+                <p><strong>Total Chapters Completed:</strong> <span id="chapters-completed">0</span></p>
+                <p><strong>Progress:</strong> <span id="progress-percentage">0%</span></p>
+            </div>
+        </section>
+
+        <!-- Chapter and Lesson Tracking -->
+        <section id="chapter-tracking">
+            <h2>Chapters and Lessons</h2>
+            <div id="chapter-list">
+                <p>Select a subject to view its chapters and lessons.</p>
+            </div>
+        </section>
+
+        <!-- Calendar Section -->
+        <section id="calendar-section">
+            <h2>Calendar</h2>
+            <p><strong>Days Remaining:</strong> <span id="days-remaining">70</span></p>
+        </section>
+
+        <script>
+            document.getElementById('subject-dropdown').addEventListener('change', function() {
+                const subject = this.value;
+                if (subject) {
+                    // Fetch chapters and lessons for the selected subject
+                    fetchChaptersAndLessons(subject);
+                } else {
+                    document.getElementById('chapter-list').innerHTML = '<p>Select a subject to view its chapters and lessons.</p>';
+                    updateProgress(0, 0);
+                }
+            });
+
+            function fetchChaptersAndLessons(subject) {
+                // Simulate fetching data from a server
+                const data = {
+                    'SH551': { completed: 5, remaining: 3 },
+                    'SH553': { completed: 4, remaining: 4 },
+                    'CT552': { completed: 6, remaining: 2 },
+                    'EX603': { completed: 3, remaining: 5 },
+                    'CT551': { completed: 7, remaining: 1 }
+                };
+
+                const subjectData = data[subject];
+                if (subjectData) {
+                    updateProgress(subjectData.completed, subjectData.remaining);
+                    document.getElementById('chapter-list').innerHTML = `
+                        <p><strong>Chapters Completed:</strong> ${subjectData.completed}</p>
+                        <p><strong>Lessons Remaining:</strong> ${subjectData.remaining}</p>
+                    `;
+                }
+            }
+
+            function updateProgress(completed, remaining) {
+                const total = completed + remaining;
+                const percentage = total ? (completed / total * 100).toFixed(2) : 0;
+
+                document.getElementById('chapters-completed').textContent = completed;
+                document.getElementById('progress-percentage').textContent = `${percentage}%`;
+
+                // Update chart
+                const ctx = document.getElementById('progress-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Completed', 'Remaining'],
+                        datasets: [{
+                            data: [completed, remaining],
+                            backgroundColor: ['#4caf50', '#f44336']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            // Calendar countdown
+            function updateDaysRemaining() {
+                const daysRemainingElement = document.getElementById('days-remaining');
+                let daysRemaining = parseInt(daysRemainingElement.textContent, 10);
+                if (daysRemaining > 0) {
+                    daysRemaining--;
+                    daysRemainingElement.textContent = daysRemaining;
+                }
+            }
+
+            // Update days remaining every day
+            setInterval(updateDaysRemaining, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
+        </script>
+
+        <!-- Feedback and Suggestions -->
+        <section id="feedback-section">
+            <h2>Study Tips</h2>
+            <div id="feedback-message">Get started by selecting a subject!</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Smart Study Tracker. Designed for excellence by Suwarna-wave.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
